@@ -1,15 +1,56 @@
-import React from "react";
+// components/Header.js
+"use client";
 
-import  IconButton  from "@mui/material/IconButton";
-import PersonIcon from "@mui/icons-material/Person";  // Ensure you still have MUI icons if you want to use them
+import React, { useState } from "react";
+import { auth } from "../app/firebase/config";
+import { signOut } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 export default function Header() {
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  // // Handle logout
+  // const handleLogout = async () => {
+  //   try {
+  //     await signOut(auth);
+  //     router.push("/sign-in"); // Redirect to the main page after logout
+  //     setOpen(false);
+  //   } catch (error) {
+  //     console.error("Logout error: ", error.message);
+  //   }
+  // };
+
   return (
-    <div className="w-full sticky top-0 flex items-center p-4 justify-between">
-      <h1 className="font-bold sm:text-6xl text-3xl">Pantry Pie</h1>
-   <IconButton aria-label="logout" size="large">
-        <PersonIcon fontSize="large" />
-        </IconButton>
+    <div className="flex justify-between items-center px-4">
+      <div className="w-full sticky top-0 text-black flex items-center p-4 justify-between bg-yellow-50">
+        <Link href="/" passHref>
+          <h1 className="font-bold text-black sm:text-4xl text-3xl duration:300 hover:text-red-500">
+            PantryPie.
+          </h1>
+        </Link>
+      </div>
+      <div className="flex items-center space-x-4">
+        <a
+          href="https://github.com/yourusername"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-black hover:text-purple-700 hover:scale-110"
+        >
+          <GitHubIcon />
+        </a>
+        <a
+          href="https://linkedin.com/in/yourusername"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-black hover:text-blue-600 hover:scale-110"
+        >
+          <LinkedInIcon />
+        </a>
+      </div>
     </div>
   );
 }

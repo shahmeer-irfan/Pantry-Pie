@@ -1,9 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-
 const inter = Inter({ subsets: ["latin"] });
+
+import Header from "../components/Header"; // Import the Header component
+import Footer from "../components/Footer"; // Import the Footer component
 
 export const metadata = {
   title: "Create Next App",
@@ -18,16 +18,17 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-          crossorigin="anonymous"
-          referrerpolicy="no-referrer"
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
         />
       </head>
       <body
-        className={`flex flex-col min-h-screen relative text-black bg-slate-100 ${inter.className}`}
+        className="flex flex-col bg-yellow-50"
+        style={{ fontFamily: inter }}
       >
         <Header />
-        <main className="flex-1 flex flex-col p-4">{children}</main> {/*it is page component.*/}
-        <Footer />
+        <main className="flex flex-1 flex-col bg-yellow-50">{children}</main>
+        <Footer /> 
       </body>
     </html>
   );
