@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   TextField,
-  Button,
   MenuItem,
   Select,
   InputLabel,
@@ -20,6 +19,9 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { doc, setDoc,collection,getDocs, deleteDoc, onSnapshot } from "firebase/firestore";
+import { db } from "../app/firebase/config";
+import { getAuth } from "firebase/auth";
 
 const PantryForm = () => {
   const [formValues, setFormValues] = useState({
@@ -28,6 +30,27 @@ const PantryForm = () => {
     expirationDate: "",
     type: "",
   });
+
+  
+    useEffect(() => {
+
+    const fetchPantryItems = async () => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      const userId = user ? user.uid : null;
+
+      if (userId) {
+        const querySnapshot = await getDocs(collection(db, "users", userId, "pantry"));
+        const items = querySnapshot.docs.map((doc) => doc.data());
+        setPantryItems(items);
+      } else {
+        console.error("User is not authenticated");
+      }
+    };
+
+    fetchPantryItems();
+  }, [])
+
 
   const [pantryItems, setPantryItems] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
@@ -41,23 +64,37 @@ const PantryForm = () => {
     });
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+  // const handleSearchChange = (e) => {
+  //   setSearchQuery(e.target.value);
+  // };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editIndex !== null) {
-      // Edit existing item
-      const updatedItems = pantryItems.map((item, index) =>
-        index === editIndex ? formValues : item
-      );
-      setPantryItems(updatedItems);
-      setEditIndex(null);
+
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const userId = user ? user.uid : null;
+
+    if (userId) {
+      if (editIndex !== null) {
+        // Edit existing item
+        const updatedItems = pantryItems.map((item, index) =>
+          index === editIndex ? formValues : item
+        );
+        setPantryItems(updatedItems);
+        setEditIndex(null);
+      } else {
+        // Add new item to local state and Firestore
+        const newPantryItems = [...pantryItems, formValues];
+        setPantryItems(newPantryItems);
+        await setDoc(doc(db, "users", userId, "pantry", formValues.name), {
+          ...formValues,
+        });
+      }
     } else {
-      // Add new item
-      setPantryItems([...pantryItems, formValues]);
+      console.error("User is not authenticated");
     }
+
     setFormValues({
       name: "",
       quantity: "",
@@ -71,16 +108,32 @@ const PantryForm = () => {
     setEditIndex(index);
   };
 
-  const handleDelete = (index) => {
-    setPantryItems(pantryItems.filter((_, i) => i !== index));
-  };
+ const handleDelete = async (index) => {
+   try {
+     const auth = getAuth();
+     const user = auth.currentUser;
+     const userId = user ? user.uid : null;
 
-  const filteredItems = pantryItems.filter(item =>
+     if (userId) {
+       await deleteDoc(
+         doc(db, "users", userId, "pantry", pantryItems[index].name)
+       );
+       setPantryItems(pantryItems.filter((_, i) => i !== index));
+     } else {
+       console.error("User is not authenticated");
+     }
+   } catch (e) {
+     console.log(e);
+   }
+ };
+
+
+  const filteredItems = pantryItems.filter((item) =>
     item.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
-    <Container m className=" bg-yellow-50 mt-20">
+    <Container className="bg-yellow-50 mt-20">
       <div className="flex flex-col lg:flex-row">
         {/* Form Section */}
         <Box
@@ -122,7 +175,7 @@ const PantryForm = () => {
           <FormControl
             fullWidth
             margin="normal"
-            classname="bg-yellow-100"
+            className="bg-yellow-100"
             required
           >
             <InputLabel id="type-label">Type</InputLabel>
@@ -132,19 +185,22 @@ const PantryForm = () => {
               value={formValues.type}
               onChange={handleInputChange}
             >
-              <MenuItem className="bg-yellow-50 hover:font-bold " value="fruit">
+              <MenuItem className="bg-yellow-50 hover:font-bold" value="fruit">
                 Fruit
               </MenuItem>
-              <MenuItem className="bg-yellow-50 hover:font-bold " value="vegetable">
+              <MenuItem
+                className="bg-yellow-50 hover:font-bold"
+                value="vegetable"
+              >
                 Vegetable
               </MenuItem>
-              <MenuItem className="bg-yellow-50 hover:font-bold " value="dairy">
+              <MenuItem className="bg-yellow-50 hover:font-bold" value="dairy">
                 Dairy
               </MenuItem>
-              <MenuItem className="bg-yellow-50 hover:font-bold " value="grain">
+              <MenuItem className="bg-yellow-50 hover:font-bold" value="grain">
                 Grain
               </MenuItem>
-              <MenuItem className="bg-yellow-50 hover:font-bold " value="meat">
+              <MenuItem className="bg-yellow-50 hover:font-bold" value="meat">
                 Meat
               </MenuItem>
               <MenuItem className="bg-yellow-50 hover:font-bold" value="other">
@@ -164,17 +220,7 @@ const PantryForm = () => {
         </Box>
 
         {/* Table Section */}
-        <div className="flex flex-col lg:flex-row lg:ml-4 mt-4 ">
-          {/* <Box sx={{ flex: 2 }}>
-            <TextField
-              label="Search"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              fullWidth
-              margin="normal"
-            />
-          </Box> */}
-
+        <div className="flex flex-col lg:flex-row lg:ml-4 mt-4">
           <TableContainer
             component={Paper}
             sx={{ flex: 3 }}
@@ -207,7 +253,6 @@ const PantryForm = () => {
                         <IconButton onClick={() => handleDelete(index)}>
                           <DeleteIcon />
                         </IconButton>
-                        {/* </IconButton>  */}
                       </Tooltip>
                     </TableCell>
                   </TableRow>

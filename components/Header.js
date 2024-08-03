@@ -35,7 +35,7 @@ export default function Header() {
       </div>
       <div className="flex items-center space-x-4">
         <a
-          href="https://github.com/yourusername"
+          href="https://github.com/shahmeer-irfan"
           target="_blank"
           rel="noopener noreferrer"
           className="text-black hover:text-purple-700 hover:scale-110"
@@ -43,7 +43,7 @@ export default function Header() {
           <GitHubIcon />
         </a>
         <a
-          href="https://linkedin.com/in/yourusername"
+          href="https://www.linkedin.com/in/shahmeer-irfan-4a3175301 "
           target="_blank"
           rel="noopener noreferrer"
           className="text-black hover:text-blue-600 hover:scale-110"
