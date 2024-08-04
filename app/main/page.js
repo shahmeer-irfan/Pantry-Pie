@@ -4,7 +4,6 @@ import { Typography, Button, Box } from "@mui/material";
 import { signOut, getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import PantryForm from "@/components/PantryForm";
-import { auth } from "../firebase/config";
 import LogoutIcon from "@mui/icons-material/Logout"; // Adjust the path as needed
 
 const MainPage = () => {
@@ -18,7 +17,7 @@ const MainPage = () => {
       if (user) {
         setAuthenticated(true);
       } else {
-        router.push("/sign-up");
+        router.push("/sign-in");
       }
       setLoading(false);
     });
@@ -28,30 +27,31 @@ const MainPage = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
-      // Clear the token cookie
+      await signOut(getAuth());
       document.cookie =
         "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-
       router.push("/sign-in");
     } catch (error) {
       console.error("Logout error:", error.message);
     }
   };
 
-  if (loading)
+  if (loading) {
     return (
       <p className="text-center font-bold text-2xl text-green-700">
         Loading...
       </p>
     );
+  }
 
-  return authenticated ? (
+  if (!authenticated) {
+    return null; // Render nothing if not authenticated
+  }
+
+  return (
     <main className="bg-yellow-100 min-h-screen flex flex-col justify-between">
       <Box className="text-center pt-8">
-        <h1
-          className="sm:text-4xl text-3xl text-center font-bold text-green-800"
-        >
+        <h1 className="sm:text-4xl text-3xl text-center font-bold text-green-800">
           Welcome Back!
         </h1>
         <Typography
@@ -84,7 +84,7 @@ const MainPage = () => {
         </Button>
       </Box>
     </main>
-  ) : null;
+  );
 };
 
 export default MainPage;

@@ -16,9 +16,11 @@ import {
   Paper,
   IconButton,
   Tooltip,
+  Button,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import axios from "axios";
 import {
   doc,
   setDoc,
@@ -28,6 +30,8 @@ import {
 } from "firebase/firestore";
 import { db } from "../app/firebase/config";
 import { getAuth } from "firebase/auth";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const PantryForm = () => {
   const [formValues, setFormValues] = useState({
@@ -40,6 +44,7 @@ const PantryForm = () => {
   const [pantryItems, setPantryItems] = useState([]);
   const [editIndex, setEditIndex] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [recipes, setRecipes] = useState(""); // State to hold recipe markdown
 
   useEffect(() => {
     const fetchPantryItems = async () => {
@@ -78,14 +83,12 @@ const PantryForm = () => {
 
     if (userId) {
       if (editIndex !== null) {
-        // Edit existing item
         const updatedItems = pantryItems.map((item, index) =>
           index === editIndex ? formValues : item
         );
         setPantryItems(updatedItems);
         setEditIndex(null);
       } else {
-        // Add new item to local state and Firestore
         const newPantryItems = [...pantryItems, formValues];
         setPantryItems(newPantryItems);
         await setDoc(doc(db, "users", userId, "pantry", formValues.name), {
@@ -125,6 +128,47 @@ const PantryForm = () => {
       }
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const generateRecipes = async () => {
+    try {
+      console.log("Generating recipes...");
+      const response = await axios.post(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`,
+        {
+          contents: [
+            {
+              parts: [
+                {
+                  text:
+                    "I want you to write a short and concise recipe from these items. Generate recipe from these items, your response should be concise and clear: " +
+                    pantryItems
+                      .map(
+                        (item) => `${item.name} (${item.quantity} ${item.type})`
+                      )
+                      .join(", "),
+                },
+              ],
+            },
+          ],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Assuming the response is markdown
+      const recipeMarkdown = response.data.candidates[0].content.parts[0].text;
+      setRecipes(recipeMarkdown);
+      console.log(recipeMarkdown); // Check the response
+    } catch (error) {
+      console.error(
+        "Error generating recipes:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
@@ -222,12 +266,19 @@ const PantryForm = () => {
               </Select>
             </FormControl>
 
-            <div className="flex justify-center mt-4">
+            <div className="flex justify-center gap-8 mt-4">
               <button
                 type="submit"
                 className="text-sm px-4 py-2 bg-orange-400 hover:bg-orange-300 text-green-800 rounded-lg "
               >
                 {editIndex !== null ? "Update Item" : "Add Item"}
+              </button>
+              <button
+              type="button"
+                onClick={generateRecipes}
+                className="bg-orange-400 text-sm px-4 py-2 hover:bg-orange-300 text-green-800 rounded-lg"
+              >
+                Make Recipes
               </button>
             </div>
           </Box>
@@ -301,6 +352,18 @@ const PantryForm = () => {
             </TableContainer>
           </div>
         </div>
+
+        {/* Recipe Generation Section */}
+        {recipes && (
+          <div className="mt-8">
+            <h2 className="text-green-800 font-bold sm:text-4xl text-center text-2xl mb-4">
+              Generated Recipe
+            </h2>
+            <div className="bg-yellow-100 text-green-700 p-4 text-center">
+              <ReactMarkdown children={recipes} remarkPlugins={[remarkGfm]} />
+            </div>
+          </div>
+        )}
       </Container>
     </div>
   );
