@@ -1,11 +1,9 @@
 import React from "react";
-import GitHubIcon from "@mui/icons-material/GitHub";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 export default function Footer() {
   return (
-    <footer className="bg-yellow-50 h-11 flex items-center justify-center ">
-    
+    <footer className="bg-yellow-100 text-sm text-green-800 h-11 flex items-center justify-center ">
+    made with love &copy;2024
     </footer>
   );
 }

@@ -35,29 +35,29 @@ const SignIn = () => {
   };
 
   return (
-    <section className="bg-yellow-50 min-h-screen grid grid-cols-1 md:grid-cols-2">
+    <section className="bg-yellow-100 text-green-800 min-h-screen grid grid-cols-1 md:grid-cols-2">
       <div className="flex items-center justify-center p-8">
-        <h1 className="text-5xl font-bold text-center">
-          Welcome Back to PantryPie
+        <h1 className="text-4xl sm:text-6xl text-green-800 font-bold text-center">
+          Welcome back! Ready to organize your kitchen?
         </h1>
       </div>
 
-      <div className="flex items-center justify-center p-8">
+      <div className="flex items-center justify-center">
         <Container
           component="main"
           maxWidth="xs"
-          className="flex flex-col items-center justify-center bg-yellow-100 p-6 rounded-lg shadow-sm shadow-red-500"
+          className="flex flex-col items-center justify-center bg-yellow-100 p-6 rounded-lg shadow-lg"
         >
           <Typography
             component="h1"
             variant="h5"
-            className="text-black font-bold text-2xl mb-4"
+            className="text-green-800 font-bold text-2xl mb-4"
           >
             Sign In
           </Typography>
 
           <form
-            className="min-w-[300px] mt-1 flex flex-col justify-center items-center"
+            className="min-w-[250px]  flex flex-col justify-center items-center"
             onSubmit={handleSubmit}
           >
             <TextField
@@ -95,15 +95,13 @@ const SignIn = () => {
                 {error}
               </Typography>
             )}
-            <button className="bg-red-500 text-white text-sm px-4 py-2 rounded-lg font-semibold duration:300 hover:scale-110 ">
+            <button className="bg-orange-400 text-green-800 text-sm px-4 py-2 rounded-lg font-semibold duration:300 hover:bg-orange-300">
               Sign In
             </button>
             <div className="flex flex-col justify-center items-center pt-4">
               <p className="text-sm font-light">Don&apos;t have an account?</p>{" "}
               <Link href="/sign-up">
-                <button className="text-sm font-semibold hover:scale-105">
-                  Sign Up
-                </button>
+                <button className="text-sm font-semibold">Sign Up</button>
               </Link>
             </div>
           </form>
