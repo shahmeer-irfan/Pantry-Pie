@@ -22,7 +22,7 @@ const Signup = () => {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password);
-      router.push("/sbutton");
+      router.push("/main");
     } catch (error) {
       setError(error.message);
       console.error(error.message);

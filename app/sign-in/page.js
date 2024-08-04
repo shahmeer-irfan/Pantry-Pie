@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import { TextField, Button, Container, Typography,Typobutton } from "@mui/material";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/config";
+import { TextField, Button, Container, Typography } from "@mui/material";
+import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { auth } from "../firebase/config"; // Adjust the import to your setup
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
@@ -14,12 +14,23 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const token = await userCredential.user.getIdToken();
+
+      // Set the token in cookies
+      document.cookie = `token=${token}; path=/`;
+
       router.push("/main");
     } catch (error) {
       setError(error.message);
-      console.error(error.message);
+      console.error("Error signing in:", error);
     }
   };
 
@@ -89,7 +100,7 @@ const SignIn = () => {
             </button>
             <div className="flex flex-col justify-center items-center pt-4">
               <p className="text-sm font-light">Don't have an account?</p>{" "}
-              <Link href="/sign-up" passHref>
+              <Link href="/sign-up">
                 <button className="text-sm font-semibold hover:scale-105">
                   Sign Up
                 </button>

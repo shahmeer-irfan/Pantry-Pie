@@ -1,64 +1,66 @@
-// app/main/page.tsx
 "use client";
-import {
-  Typography,
-  Button,
-  IconButton,
-  PersonIcon,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-} from "@mui/material";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase/config"; // Adjust the path as needed
+import { useEffect, useState } from "react";
+import { Typography, Button, Box } from "@mui/material";
+import { signOut, getAuth, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import PantryForm from "@/components/PantryForm";
+import { auth } from "../firebase/config"; // Adjust the path as needed
 
 const MainPage = () => {
   const router = useRouter();
+  const [authenticated, setAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setAuthenticated(true);
+      } else {
+        router.push("/sign-up");
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      router.push("/");
+      // Clear the token cookie
+      document.cookie =
+        "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;";
+
+      router.push("/sign-in");
     } catch (error) {
       console.error("Logout error:", error.message);
     }
   };
 
-  return (
+  if (loading) return <p>Loading...</p>;
+
+  return authenticated ? (
     <main className="mb-20 bg-yellow-50">
-      {/* <IconButton
-        aria-label="logout"
-        size="large"
-        color="inherit"
-        onClick={() => setOpen(true)}
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        flexDirection="column"
+        minHeight="100vh"
       >
-        <PersonIcon fontSize="large" color="white" />
-      </IconButton>
-
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogTitle>Logout</DialogTitle>
-        <DialogContent>
-          <Typography variant="h6" gutterBottom>
-            {auth.currentUser?.email}
-          </Typography>
-          <Typography variant="body2">
-            Are you sure you want to logout?
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={handleLogout} color="primary">
-            Logout
-          </Button>
-        </DialogActions>
-      </Dialog> */}
-
-      <PantryForm />
+        <PantryForm />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleLogout}
+          sx={{ mt: 2 }} // Add margin-top for spacing
+        >
+          Logout
+        </Button>
+      </Box>
     </main>
-  );
+  ) : null;
 };
 
 export default MainPage;
