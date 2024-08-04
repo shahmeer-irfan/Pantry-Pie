@@ -133,7 +133,7 @@ const PantryForm = () => {
 
   const generateRecipes = async () => {
     try {
-      console.log("Generating recipes...");
+      setRecipes("Generating recipes...");
       const response = await axios.post(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`,
         {

@@ -9,7 +9,7 @@ const Home = () => {
           Welcome to PantryPie
         </h1>
         <h2 className="text-xl text-center font-semibold text-green-700">
-          Never Worry About Your Pantry Storage Again!
+          Manage, Track, and Create - All in One Place!
         </h2>
         <p className="text-center font-normal text-green-700">
           Start your journey with PantryPie today and take control of your
@@ -25,9 +25,7 @@ const Home = () => {
         </Link>
         <p className="text-sm font-mono">Already have an account?</p>{" "}
         <Link href="/sign-in" passHref>
-          <button className="text-sm  hover:font-bold">
-            Sign In
-          </button>
+          <button className="text-sm  hover:font-bold">Sign In</button>
         </Link>
       </div>
     </main>
