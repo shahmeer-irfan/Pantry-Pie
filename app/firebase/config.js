@@ -1,4 +1,4 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -13,7 +13,8 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+//we do this for server side rendering.
+export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp(); //this will initialize the app if it is not already initialized.
 
 export const auth = getAuth(app); //this will allow us to access authentication in firebase.
 export const db = getFirestore(app); //this will allow us to access database in firestore.
