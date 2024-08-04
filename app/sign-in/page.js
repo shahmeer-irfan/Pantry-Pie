@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { TextField, Button, Container, Typography } from "@mui/material";
+import { TextField, Container, Typography } from "@mui/material";
 import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -10,10 +10,13 @@ const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
       const auth = getAuth();
@@ -29,8 +32,22 @@ const SignIn = () => {
 
       router.push("/main");
     } catch (error) {
-      setError(error.message);
+      setLoading(false);
+      setError(getCustomErrorMessage(error.code));
       console.error("Error signing in:", error);
+    }
+  };
+
+  const getCustomErrorMessage = (code) => {
+    switch (code) {
+      case "auth/wrong-password":
+        return "The password you entered is incorrect.";
+      case "auth/user-not-found":
+        return "No account found with this email.";
+      case "auth/invalid-email":
+        return "The email address is not valid.";
+      default:
+        return "Failed to sign in. Please try again.";
     }
   };
 
@@ -57,7 +74,7 @@ const SignIn = () => {
           </Typography>
 
           <form
-            className="min-w-[250px]  flex flex-col justify-center items-center"
+            className="min-w-[250px] flex flex-col justify-center items-center"
             onSubmit={handleSubmit}
           >
             <TextField
@@ -90,13 +107,13 @@ const SignIn = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="mb-4"
             />
-            {error && (
-              <Typography color="error" className="mb-4">
-                {error}
-              </Typography>
-            )}
-            <button className="bg-orange-400 text-green-800 text-sm px-4 py-2 rounded-lg font-semibold duration:300 hover:bg-orange-300">
-              Sign In
+            {error && <p className="text-sm text-green-700 p-2">{error}</p>}
+            <button
+              type="submit"
+              className="bg-orange-400 text-green-800 text-sm px-4 py-2 rounded-lg font-semibold duration-300 hover:bg-orange-300"
+              disabled={loading}
+            >
+              {loading ? "Signing in..." : "Sign In"}
             </button>
             <div className="flex flex-col justify-center items-center pt-4">
               <p className="text-sm font-light">Don&apos;t have an account?</p>{" "}
