@@ -60,9 +60,9 @@ export default function RootLayout({ children }) {
         />
         <meta property="og:type" content="website" />
       </head>
-      <body className="flex flex-col bg-yellow-50">
+      <body className="w-ful">
         <Header />
-        <main className="flex flex-1 flex-col bg-yellow-50">{children}</main>
+        <main className="flex flex-1 justify-center items-center flex-col bg-yellow-100">{children}</main>
         <Footer />
       </body>
       <Analytics />

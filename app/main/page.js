@@ -38,7 +38,7 @@ const MainPage = () => {
 
   if (loading) {
     return (
-      <p className="text-center font-bold text-2xl text-green-700">
+      <p className="text-center mt-20 font-bold text-2xl text-green-700">
         Loading...
       </p>
     );
@@ -49,9 +49,9 @@ const MainPage = () => {
   }
 
   return (
-    <main className="bg-yellow-100 min-h-screen flex flex-col justify-between">
-      <Box className="text-center pt-8">
-        <h1 className="sm:text-4xl text-3xl text-center font-bold text-green-800">
+    <main className="bg-yellow-100 flex flex-col w-full justify-between">
+      <Box fullWidth className="text-center w-full pt-8 px-8">
+        <h1 className="sm:text-4xl text-3xl  text-center font-bold text-green-800">
           Welcome Back!
         </h1>
         <Typography
@@ -62,21 +62,16 @@ const MainPage = () => {
           Experience the peace of mind that comes with a well-organized pantry!
         </Typography>
       </Box>
-      <Box
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        flexDirection="column"
-        flexGrow="1"
+      <div className="flex flex-col items-center gap-4 p-4"
       >
         <PantryForm />
-      </Box>
+      </div>
       <Box display="flex" justifyContent="center" p={2}>
         <Button
           variant="contained"
           color="primary"
           onClick={handleLogout}
-          size="small"
+size="small"
           startIcon={<LogoutIcon />}
           className="bg-green-800 text-yellow-100 hover:bg-green-700"
         >
