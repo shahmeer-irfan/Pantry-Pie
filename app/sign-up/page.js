@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { TextField, Button, Container, Typography } from "@mui/material";
+import { TextField, Container, Typography } from "@mui/material";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -20,12 +21,29 @@ const Signup = () => {
       return;
     }
 
+    setLoading(true);
+    setError(null);
+
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push("/main");
     } catch (error) {
-      setError(error.message);
-      console.error(error.message);
+      setLoading(false);
+      setError(getCustomErrorMessage(error.code));
+      console.error("Error signing up:", error);
+    }
+  };
+
+  const getCustomErrorMessage = (code) => {
+    switch (code) {
+      case "auth/email-already-in-use":
+        return "The email address is already in use.";
+      case "auth/invalid-email":
+        return "The email address is not valid.";
+      case "auth/weak-password":
+        return "The password is too weak.";
+      default:
+        return "Failed to sign up. Please try again.";
     }
   };
 
@@ -101,19 +119,18 @@ const Signup = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="mb-4"
             />
-            {error && (
-              <Typography color="error" className="mb-4">
-                {error}
-              </Typography>
-            )}
+            {error && <p className="text-sm text-green-700 p-2">{error}</p>}
             <button
               type="submit"
-              className="bg-orange-400 hover:bg-orange-300 text-green-800 text-sm px-4 py-2 rounded-lg font-semibold duration:300  my-2"
+              className="bg-orange-400 hover:bg-orange-300 text-green-800 text-sm px-4 py-2 rounded-lg font-semibold duration-300 my-2"
+              disabled={loading}
             >
-              Sign Up
+              {loading ? "Signing up..." : "Sign Up"}
             </button>
             <div className="flex flex-col justify-center items-center pt-4">
-              <p className="text-sm text-green-700 font-light">Already part of the family?</p>{" "}
+              <p className="text-sm text-green-700 font-light">
+                Already part of the family?
+              </p>{" "}
               <Link href="/sign-in" passHref>
                 <button className="text-green-800 text-sm font-semibold">
                   Sign In
