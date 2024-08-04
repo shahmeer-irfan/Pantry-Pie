@@ -9,7 +9,7 @@ const Home = () => {
           Welcome to PantryPie
         </h1>
         <h2 className="text-xl text-center font-semibold text-green-700">
-          Manage, Track, and Create - All in One Place!
+          Manage, Track, and Create!
         </h2>
         <p className="text-center font-normal text-green-700">
           Start your journey with PantryPie today and take control of your

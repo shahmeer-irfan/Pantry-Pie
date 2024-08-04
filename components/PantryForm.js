@@ -274,7 +274,7 @@ const PantryForm = () => {
                 {editIndex !== null ? "Update Item" : "Add Item"}
               </button>
               <button
-              type="button"
+                type="button"
                 onClick={generateRecipes}
                 className="bg-orange-400 text-sm px-4 py-2 hover:bg-orange-300 text-green-800 rounded-lg"
               >
@@ -360,7 +360,9 @@ const PantryForm = () => {
               Generated Recipe
             </h2>
             <div className="bg-yellow-100 text-green-700 p-4 text-center">
-              <ReactMarkdown children={recipes} remarkPlugins={[remarkGfm]} />
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {recipes}
+              </ReactMarkdown>
             </div>
           </div>
         )}
