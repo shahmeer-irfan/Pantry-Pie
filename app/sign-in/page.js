@@ -99,7 +99,7 @@ const SignIn = () => {
               Sign In
             </button>
             <div className="flex flex-col justify-center items-center pt-4">
-              <p className="text-sm font-light">Don't have an account?</p>{" "}
+              <p className="text-sm font-light">Don&apos;t have an account?</p>{" "}
               <Link href="/sign-up">
                 <button className="text-sm font-semibold hover:scale-105">
                   Sign Up
