@@ -32,7 +32,7 @@ const Signup = () => {
   return (
     <section className="bg-yellow-100 min-h-screen grid grid-cols-1 md:grid-cols-2 ">
       <div className="flex items-center justify-center ">
-        <h1 className="text-4xl sm:text-6xl text-green-800 font-bold text-center">
+        <h1 className="text-4xl sm:text-6xl text-green-800 font-bold text-center px-4">
           Create Account and Get Started!
         </h1>
         <p></p>
@@ -47,7 +47,7 @@ const Signup = () => {
           <Typography
             component="h1"
             variant="h5"
-            className="text-green-800 font-bold text-2xl mb-4"
+            className="text-green-800 font-bold text-3xl mb-4"
           >
             Sign Up
           </Typography>

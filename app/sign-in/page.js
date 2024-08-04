@@ -50,8 +50,8 @@ const SignIn = () => {
         >
           <Typography
             component="h1"
-            variant="h5"
-            className="text-green-800 font-bold text-2xl mb-4"
+            variant="h4"
+            className="text-green-800 font-bold text-3xl mb-4"
           >
             Sign In
           </Typography>
