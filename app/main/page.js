@@ -49,7 +49,7 @@ const MainPage = () => {
   }
 
   return (
-    <main className="bg-yellow-100 flex flex-col w-full justify-between">
+    <main className="bg-yellow-100 flex flex-col w-full justify-between overflow-x-hidden">
       <Box fullWidth className="text-center w-full pt-8 px-8">
         <h1 className="sm:text-4xl text-3xl  text-center font-bold text-green-800">
           Welcome Back!
@@ -62,7 +62,7 @@ const MainPage = () => {
           Experience the peace of mind that comes with a well-organized pantry!
         </Typography>
       </Box>
-      <div className="flex flex-col items-center gap-4 p-4"
+      <div className="flex flex-col  items-center gap-4 p-4"
       >
         <PantryForm />
       </div>
@@ -71,7 +71,7 @@ const MainPage = () => {
           variant="contained"
           color="primary"
           onClick={handleLogout}
-size="small"
+          size="small"
           startIcon={<LogoutIcon />}
           className="bg-green-800 text-yellow-100 hover:bg-green-700"
         >

@@ -5,7 +5,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 export default function Header() {
   return (
-    <header className="w-full bg-green-700 text-yellow-100 sticky top-0 z-50">
+    <header className="min-w-screen bg-green-700 text-yellow-100 sticky top-0 z-50">
       <div className="container mx-auto flex justify-between items-center p-4">
         <Link href="/" passHref>
           <div className="flex items-center cursor-pointer">
