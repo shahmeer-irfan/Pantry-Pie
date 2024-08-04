@@ -184,7 +184,14 @@ const PantryForm = () => {
           <Box
             component="form"
             onSubmit={handleSubmit}
-            sx={{ flex: 1, mr: { lg: 4 }, mb: { xs: 4, lg: 0 } }}
+            sx={{
+              flex: 1,
+              mr: { lg: 4 },
+              ml: { lg: 4 },
+              mb: { xs: 4, lg: 0 },
+              p: 2,
+              borderRadius: 2,
+            }}
           >
             <TextField
               label="Name"
